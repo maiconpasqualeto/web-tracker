@@ -2,17 +2,22 @@ package br.com.sixinf.webtracker;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.enterprise.context.SessionScoped;
+
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
-import javax.inject.Named;
 
-@Named
-@SessionScoped
+import org.apache.log4j.Logger;
+
+@ManagedBean
+@RequestScoped
 public class UserBean implements Serializable {
-    
+	
+	private static final long serialVersionUID = 1L;
+	
     protected String firstName = "Duke";
     protected String lastName = "Java";
     protected Date dob;
@@ -78,7 +83,12 @@ public class UserBean implements Serializable {
             throw new ValidatorException(message);
         }
     }
-
+    
+    public String logar(){
+    	
+    	return "main";
+    }
+    
     public String addConfirmedUser() {
         // This method would call a database or other service and add the 
         // confirmed user information.
@@ -86,7 +96,7 @@ public class UserBean implements Serializable {
         FacesMessage doneMessage = 
                 new FacesMessage("Successfully added new user");
         FacesContext.getCurrentInstance().addMessage(null, doneMessage);
-        return "done";
+        return "main";
     }
 }
 
