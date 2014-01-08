@@ -35,5 +35,9 @@
    <welcome-file-list>
      <welcome-file>faces/main.xhtml</welcome-file>
    </welcome-file-list>
+   
+   <listener>
+	 <listener-class>br.com.sixinf.webtracker.listener.WebMediaListener</listener-class>
+   </listener>
 
 </web-app>
