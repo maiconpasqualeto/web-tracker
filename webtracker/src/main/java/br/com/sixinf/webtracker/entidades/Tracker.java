@@ -3,6 +3,7 @@
  */
 package br.com.sixinf.webtracker.entidades;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -29,8 +34,11 @@ import br.com.sixinf.ferramentas.persistencia.Entidade;
  */
 @Entity
 @Table(name="tracker")
-public class Tracker implements Entidade {
+@Inheritance(strategy=InheritanceType.JOINED)
+public class Tracker implements Entidade, Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@SequenceGenerator(name="seqTracker", sequenceName="tracker_id_seq")
 	@GeneratedValue(strategy=GenerationType.IDENTITY, generator="seqTracker")
@@ -61,10 +69,17 @@ public class Tracker implements Entidade {
 	@Column(name="status_registro")
 	private Character statusRegistro;
 	
+	@ManyToOne(targetEntity=Usuario.class, fetch=FetchType.LAZY)
+	@JoinColumn(name="id_usuario")
+	private Usuario usuario;
+		
 	@OneToMany(mappedBy="tracker", fetch=FetchType.LAZY, cascade=CascadeType.DETACH)
 	@Cascade(org.hibernate.annotations.CascadeType.DETACH)
 	private List<Posicao> posicoes;
 	
+	public Tracker() {
+	}
+		
 	public Long getId() {
 		return id;
 	}
@@ -128,10 +143,26 @@ public class Tracker implements Entidade {
 	public void setStatusRegistro(Character statusRegistro) {
 		this.statusRegistro = statusRegistro;
 	}
+	
+	public List<Posicao> getPosicoes() {
+		return posicoes;
+	}
+
+	public void setPosicoes(List<Posicao> posicoes) {
+		this.posicoes = posicoes;
+	}
 
 	@Override
 	public Long getIdentificacao() {
 		return id;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

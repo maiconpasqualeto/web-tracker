@@ -18,6 +18,8 @@ import org.primefaces.component.log.Log;
 import br.com.sixinf.ferramentas.Utilitarios;
 import br.com.sixinf.ferramentas.dao.DAOException;
 import br.com.sixinf.webtracker.dao.SegurancaDAO;
+import br.com.sixinf.webtracker.dao.TrackerDAO;
+import br.com.sixinf.webtracker.entidades.Pet;
 import br.com.sixinf.webtracker.entidades.Tracker;
 
 @ManagedBean
@@ -95,7 +97,14 @@ public class UserBean implements Serializable {
     }
     
     public String logar(){
-    	
+    	try {
+			Pet p = TrackerDAO.getInstance().buscar(1L, Pet.class);
+			System.out.println("Cachorro: " + p.getNome());
+			System.out.println("Tracker: " + p.getNumeroSerie());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	return "main";
     }
     

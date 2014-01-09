@@ -3,6 +3,8 @@
  */
 package br.com.sixinf.webtracker.entidades;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -25,8 +27,10 @@ import br.com.sixinf.ferramentas.persistencia.Entidade;
  */
 @Entity
 @Table(name="posicao")
-public class Posicao implements Entidade {
+public class Posicao implements Entidade, Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@SequenceGenerator(name="seqPosicao", sequenceName="posicao_id_seq")
 	@GeneratedValue(strategy=GenerationType.IDENTITY, generator="seqPosicao")
@@ -53,10 +57,10 @@ public class Posicao implements Entidade {
 	private Character longitudeQuadrande;
 	
 	@Column(name="latitude_decimal")
-	private Double latitudeDecimal;
+	private BigDecimal latitudeDecimal;
 	
 	@Column(name="longitude_decimal")
-	private Double longitudeDecimal;
+	private BigDecimal longitudeDecimal;
 	
 	@Column(name="data_hora_coordenada")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -66,10 +70,10 @@ public class Posicao implements Entidade {
 	private Character statusRegistro;
 	
 	@Column(name="velocidade")
-	private Double velocidade;
+	private BigDecimal velocidade;
 	
 	@Column(name="curso")
-	private Double curso;
+	private BigDecimal curso;
 	
 	@ManyToOne(targetEntity=Tracker.class)
 	@JoinColumn(name="id_tracker")
@@ -131,22 +135,6 @@ public class Posicao implements Entidade {
 		this.longitudeQuadrande = longitudeQuadrande;
 	}
 	
-	public Double getLatitudeDecimal() {
-		return latitudeDecimal;
-	}
-
-	public void setLatitudeDecimal(Double latitudeDecimal) {
-		this.latitudeDecimal = latitudeDecimal;
-	}
-
-	public Double getLongitudeDecimal() {
-		return longitudeDecimal;
-	}
-
-	public void setLongitudeDecimal(Double longitudeDecimal) {
-		this.longitudeDecimal = longitudeDecimal;
-	}
-
 	public Date getDataHoraCoordenada() {
 		return dataHoraCoordenada;
 	}
@@ -170,20 +158,36 @@ public class Posicao implements Entidade {
 	public void setTracker(Tracker tracker) {
 		this.tracker = tracker;
 	}
+	
+	public BigDecimal getLatitudeDecimal() {
+		return latitudeDecimal;
+	}
 
-	public Double getVelocidade() {
+	public void setLatitudeDecimal(BigDecimal latitudeDecimal) {
+		this.latitudeDecimal = latitudeDecimal;
+	}
+
+	public BigDecimal getLongitudeDecimal() {
+		return longitudeDecimal;
+	}
+
+	public void setLongitudeDecimal(BigDecimal longitudeDecimal) {
+		this.longitudeDecimal = longitudeDecimal;
+	}
+
+	public BigDecimal getVelocidade() {
 		return velocidade;
 	}
 
-	public void setVelocidade(Double velocidade) {
+	public void setVelocidade(BigDecimal velocidade) {
 		this.velocidade = velocidade;
 	}
 
-	public Double getCurso() {
+	public BigDecimal getCurso() {
 		return curso;
 	}
 
-	public void setCurso(Double curso) {
+	public void setCurso(BigDecimal curso) {
 		this.curso = curso;
 	}
 
