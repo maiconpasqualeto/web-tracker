@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<h:head>
+	<script type='text/javascript'>
+		$(function(){
+		    $('#conteudo') .css({'height': (($(window).height()-135))+'px'});
+		    $(window).resize(function(){
+		        $('#conteudo') .css({'height': (($(window).height()-135))+'px'});
+		    });
+		});
+	</script>
+</h:head>
+<h:body>
+
+	<ui:decorate template="../layout/tpl_limpo.xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui">
+		
+		<ui:define name="topo">
+			<ui:include src="../layout/topo_login.xhtml"></ui:include>			
+		</ui:define>
+
+		<ui:define name="principal">
+
+			<h:form id="frmLogin">
+
+				<p:growl id="growLogin" showDetail="false" />
+
+				<p:panelGrid styleClass="ui-shadow"
+					style="margin:auto; position: absolute; top: 0; right: 0; bottom: 0;  left: 0; width: 250px;">
+
+					<f:facet name="header">
+						<p:row>
+							<p:column colspan="3">
+								<h:outputText value="Autenticação" style="font-size:16px;" />
+							</p:column>
+						</p:row>
+					</f:facet>
+
+					<p:row>
+						<p:column>
+							<p:outputLabel id="lblUsuario" for="txtUsuario" value="Usuário:" />
+						</p:column>
+						<p:column>
+							<p:inputText id="txtUsuario"
+								value="#{segurancaBean.usuario.nomeUsuario}" required="true"
+								requiredMessage="Usuário deve ser preenchido">
+								<p:focus />
+								<p:watermark for="txtUsuario" value="digite o usuário" />
+							</p:inputText>
+						</p:column>						
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel id="lblSenha" for="txtSenha" value="Senha:" />
+						</p:column>
+						<p:column>
+							<p:password id="txtSenha" value="#{segurancaBean.usuario.senha}"
+								required="true" requiredMessage="Senha deve ser preenchida">
+								<p:watermark value="digite a senha" for="txtSenha"></p:watermark>
+							</p:password>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="3" styleClass="ui-widget-header">
+							<p:commandButton id="btnLogar" value="Logar" ajax="true"
+								update="frmLogin" action="#{segurancaBean.logar}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2" style="text-align: center;">
+							<p:commandLink id="btnRegistrar" value="Registrar novo usuário"
+								immediate="true" ajax="false"
+								action="/pages/autocadastro.xhtml?faces-redirect=true" />
+							<pe:tooltip for="btnRegistrar" 
+								value="Clique aqui para registrar um novo usuário e cadastrar seu Rastreador. Se você já possui um usuário e deseja cadastrar um novo rastreador, faça o login e depois cadastre o Rastreador." 
+								showEffect="slideToggle" hideEffect="slideToggle" 
+								showDelay="0" myPosition="left center" atPosition="right center"/> 
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2" style="text-align: center;">
+							<p:commandLink id="btnEsqueceu" value="Esqueceu a senha"
+								action="#" />
+							<pe:tooltip for="btnEsqueceu" 
+								value="Se você esqueceu a sua senha, clique aqui para recuperá-la." 
+								showEffect="slideToggle" hideEffect="slideToggle" 
+								showDelay="0" myPosition="left center" atPosition="right center"/> 
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+			</h:form>
+
+		</ui:define>
+
+	</ui:decorate>
+</h:body>
+
+</html>

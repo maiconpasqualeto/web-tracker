@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" >
+
+	<h:head>
+		
+	</h:head>
+	<h:body>
+		<ui:composition>
+			<div id="divheader" >
+				<h:outputText value="Tracker" style="font-size:1.7em; font-weight: bold; padding-left: 310px;color: #FFF" />
+			</div>
+			<div id="divusuario" style="color: #FFF;position: absolute;right:10px;top:35px;z-index:200;">
+				<h:outputText value="#{segurancaBean.usuarioSessao}"/>
+			</div>
+		    <div id="divlogo" class="logo" >
+				<p:graphicImage height="70px"
+							value="/images/logo_six_png.png"/>
+  			</div>
+  			<div id="divbar" class="bar" >
+				<nav>
+					<ui:insert name="menu" >
+						<ui:include src="menu.xhtml" />
+					</ui:insert>
+				</nav>
+  			</div> 
+			
+		</ui:composition>
+	</h:body>
+
+</html>

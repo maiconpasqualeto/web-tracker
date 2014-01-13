@@ -1,14 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+      
 <h:head>
-  <title>A Simple JavaServer Faces 2.0 View</title>
+  <title>Teste Prime faces</title>
+  <h:outputStylesheet name="default.css" library="css" />
 </h:head>
 <h:body>
   <h:form>
       First name: #{userBean.firstName} Last name: #{userBean.lastName}
-    <p><h:commandButton value="submit" action="#{userBean.logar}" /></p>
+    
+    <p:menubar>
+    	<p:submenu label="Arquivo">
+    		<p:menuitem value="Abrir" action="#" />
+    		<p:menuitem value="Salvar" action="#" />
+    		<p:menuitem value="Salvar como..." action="#" />
+    	</p:submenu>
+    	<p:submenu label="Editar">
+    		<p:menuitem value="Recortar" action="#" />
+    	</p:submenu>
+    	<p:submenu label="Ferramentas">
+    		<p:menuitem value="Upload de arquivo" action="#" />
+    		<p:menuitem value="Download de arquivo" action="#" />
+    		<p:menuitem value="Conversão" action="#" />
+    	</p:submenu>
+    	<p:menuitem value="Sair" action="#" />
+    </p:menubar>
+    
+    <p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/>
+    
+    	<p:commandButton id="btnSubmit" value="submit" action="#{userBean.logar}" />
+    
+    
+    <p:dialog modal="true" widgetVar="statusDialog" header="status" width="181" 
+        draggable="false" closable="false">  
+    	<p:graphicImage value="/images/3MA_processingbar.gif" />  
+	</p:dialog>  
+    
   </h:form>
 </h:body>
 </html>

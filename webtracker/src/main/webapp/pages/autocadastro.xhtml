@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<script type='text/javascript'>
+		$(function() {
+			$('#conteudo').css({
+				'height' : (($(window).height() - 135)) + 'px'
+			});
+			$(window).resize(function() {
+				$('#conteudo').css({
+					'height' : (($(window).height() - 135)) + 'px'
+				});
+			});
+		});
+	</script>
+</h:head>
+<h:body>
+
+	<ui:decorate template="../layout/tpl_limpo.xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui">
+
+		<ui:define name="topo">
+			<ui:include src="../layout/topo_login.xhtml"></ui:include>
+		</ui:define>
+
+		<ui:define name="principal">
+
+			<h:form id="frmAuto">
+			
+				<p:growl id="growGeral" showDetail="false" />
+
+				<p:wizard flowListener="#{segurancaBean.onFlowProcess}"
+					styleClass="ui-shadow"
+					style="margin:auto; position: absolute; 
+					top: 0; right: 0; bottom: 0;  left: 0; width: 750px; height: 380px"
+					nextLabel="Avançar" backLabel="Voltar">
+
+					<p:tab id="tabUsuario" title="Usuario">
+
+						<p:panel header="Cadastro de Usuário">
+
+							<p:growl id="growUsuario" showDetail="false" />
+
+							<h:panelGrid columns="2" >
+								<h:outputText id="lblNome" value="Nome: *" for="txtNome" />
+								<p:inputText id="txtNome" required="true" label="Nome"
+									value="#{segurancaBean.usuario.nome}" size="62" >
+									<p:focus for="txtNome"/>
+								</p:inputText>
+								
+								<h:outputText value="CPF: *" />
+								<p:inputMask required="true" label="CPF" mask="999.999.999-99"
+									value="#{segurancaBean.usuario.cpf}" size="12" converter="inputMaskConverter">
+									<f:validator validatorId="cpfValidator" />
+								</p:inputMask>
+
+								<h:outputText value="Email: *" />
+								<p:inputText required="true" label="Email"
+									value="#{segurancaBean.usuario.email}" size="30">
+									<f:validator validatorId="emailValidator" />
+								</p:inputText>
+								
+								<h:outputText value="Melhor data venc.: *" />
+								<p:selectOneMenu value="#{segurancaBean.usuario.melhorDiaVencimento}" 
+									required="true" label="Melhor data vencimento" >  
+						            <f:selectItem itemLabel="Selecione" itemValue="" />  
+						            <f:selectItem itemLabel="10" itemValue="10" />  
+						            <f:selectItem itemLabel="15" itemValue="15" />  
+						            <f:selectItem itemLabel="17" itemValue="17" />
+						            <f:selectItem itemLabel="20" itemValue="20" />  
+						        </p:selectOneMenu> 
+						        
+						        <h:outputText value="Celular: * " />
+								<p:inputMask required="true" label="Celular" mask="(99)99999999"
+									value="#{segurancaBean.usuario.foneCelular}" size="12" converter="inputMaskConverter">
+								</p:inputMask>
+								
+								<h:outputText value="Telefone de contato: " />
+								<p:inputMask label="Telefone de contato" mask="(99)99999999"
+									value="#{segurancaBean.usuario.foneContato}" size="12" converter="inputMaskConverter">
+								</p:inputMask>
+
+								<h:outputText value="Nome de usuário: *" />
+								<p:inputText required="true" label="Nome de usuário"
+									value="#{segurancaBean.usuario.nomeUsuario}" size="30"
+									validatorMessage="Nome de usuário não pode conter espaços nem caracteres especiais, só letras">
+									<f:validateRegex pattern="[a-zA-Z]*" />
+								</p:inputText>
+
+								<h:outputText value="Senha: *" />
+								<p:password id="txtSenha" required="true" label="Senha"
+									value="#{segurancaBean.usuario.senha}" maxlength="12" size="8"
+									match="txtConfirmaSenha" redisplay="true"
+									validatorMessage="As duas senhas não são iguais">
+									<f:validateLength minimum="6" maximum="12" />
+								</p:password>
+
+								<h:outputText value="Confirmação de Senha: *" />
+								<p:password id="txtConfirmaSenha" required="true"
+									label="Confirmação de Senha" redisplay="true"
+									value="#{segurancaBean.usuario.senha}" maxlength="12" size="8">
+									<f:validateLength minimum="6" maximum="12" />
+								</p:password>
+
+							</h:panelGrid>
+						</p:panel>
+
+					</p:tab>
+
+					<p:tab id="tabEndereco" title="Endereço">
+
+						<p:panel id="pnlEndereco" header="Endereço">
+
+							<p:growl id="growEndereco" showDetail="false" />
+
+							<h:panelGrid columns="2" >
+								<h:outputText value="CEP: *" />
+								<p:inputMask id="txtCep" required="true" label="CEP" mask="99999-999"
+									value="#{segurancaBean.endereco.cep}"
+									valueChangeListener="#{segurancaBean.buscarCEP}" size="8"
+									converter="inputMaskConverter">
+									<p:focus for="txtCep" />
+									<p:ajax event="blur" process="@this" update="txtLogradouro, txtBairro, txtMunicipio, txtUf"/>
+								</p:inputMask>
+
+								<h:outputText value="Logradouro: *" />
+								<p:inputText id="txtLogradouro" required="true" label="Logradouro"
+									value="#{segurancaBean.endereco.logradouro}" size="63" />
+
+								<h:outputText value="Número: *" />
+								<p:inputText id="txtNumero" required="true" label="Número"
+									value="#{segurancaBean.endereco.numero}" size="8" />
+
+								<h:outputText value="Complemento: " />
+								<p:inputText label="Complemento"
+									value="#{segurancaBean.endereco.complemento}" size="15" />
+
+								<h:outputText value="Bairro: *" />
+								<p:inputText id="txtBairro" required="true" label="Bairro"
+									value="#{segurancaBean.endereco.bairro}" size="15" />
+
+								<h:outputText value="Município: *" />
+								<p:inputText id="txtMunicipio" required="true" label="Municipio"
+									value="#{segurancaBean.endereco.municipio}" size="40" />
+
+								<h:outputText value="UF: *" />
+								<p:inputText id="txtUf" required="true" label="UF"
+									value="#{segurancaBean.endereco.uf}" size="2" />
+
+							</h:panelGrid>
+						</p:panel>
+
+					</p:tab>
+
+					<p:tab id="tabTracker" title="Tracker">
+						<p:panel header="Cadastro do Rastreador">
+
+							<p:growl id="growTracker" showDetail="false" />
+
+							<h:panelGrid columns="2" >
+								<h:outputText value="Nome do Pet: *" />
+								<p:inputText id="txtNomePet" value="#{segurancaBean.pet.nome}" required="true">
+									<p:focus for="txtNomePet"/>
+								</p:inputText>
+								
+								<h:outputText value="Raça: " />
+								<p:inputText value="#{segurancaBean.pet.raca}" />
+								
+								<h:outputText value="Data Nascimento: " />
+								<p:calendar id="dtNasc" value="#{segurancaBean.pet.dataNascimento}" 
+									pattern="dd/MM/yyyy" size="25" placeholder=" " mode="popup" >
+									<p:watermark value="Clique aqui para calendário" for="dtNasc"/>
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:calendar>
+								
+								<h:outputText value="Num. Serie: *" />
+								<p:inputText value="#{segurancaBean.pet.numeroSerie}" required="true"/>
+								
+							</h:panelGrid>
+
+						</p:panel>
+					</p:tab>
+					
+					<p:tab id="tabConfirma" title="Confirmação">
+						<p:panel header="Confirmação das informações" >
+
+							<h:panelGrid id="pnlConfirma" columns="3" rowClasses="gridRow">
+							
+								<p:panel header="Usuário" style="border:0;">
+									<h:panelGrid columns="2" >
+										<h:outputText value="Nome:" />
+										<h:outputText value="#{segurancaBean.usuario.nome}" styleClass="outputLabel" />  
+
+										<h:outputText value="CPF:" />
+										<h:outputText value="#{segurancaBean.usuario.cpfMask}" styleClass="outputLabel" />
+								
+										<h:outputText value="Email:" />
+										<h:outputText value="#{segurancaBean.usuario.email}" styleClass="outputLabel" />
+
+										<h:outputText value="Usuário:" />
+										<h:outputText value="#{segurancaBean.usuario.nomeUsuario}" styleClass="outputLabel" />
+										
+										<h:outputText value="Ceular:" />										
+										<h:outputText value="#{segurancaBean.usuario.foneCeularMask}" styleClass="outputLabel" />
+										
+										<h:outputText value="Contato:" />
+										<h:outputText value="#{segurancaBean.usuario.foneContatoMask}" styleClass="outputLabel" />
+											
+									</h:panelGrid>
+									
+								</p:panel>
+								
+								<p:panel header="Endereço" style="border:0;">
+									<h:panelGrid columns="2" >
+										<h:outputText value="CEP:" />
+										<h:outputText value="#{segurancaBean.endereco.cepMask}" styleClass="outputLabel" />
+												
+										<h:outputText value="Logradouro:" />
+										<h:outputText value="#{segurancaBean.endereco.logradouro}" styleClass="outputLabel" />
+										
+										<h:outputText value="Número:" />
+										<h:outputText value="#{segurancaBean.endereco.numero}" styleClass="outputLabel" />
+										
+										<h:outputText value="Complemento:" />
+										<h:outputText value="#{segurancaBean.endereco.complemento}" styleClass="outputLabel" />
+										
+										<h:outputText value="Bairro:" />
+										<h:outputText value="#{segurancaBean.endereco.bairro}" styleClass="outputLabel" />
+										
+										<h:outputText value="Município:" />
+										<h:outputText value="#{segurancaBean.endereco.municipio}" styleClass="outputLabel" />
+										
+										<h:outputText value="UF:" />
+										<h:outputText value="#{segurancaBean.endereco.uf}" styleClass="outputLabel" />
+										
+									</h:panelGrid>
+									
+								</p:panel>
+								
+								<p:panel header="Pet" style="border:0;">
+									<h:panelGrid columns="2" >
+										<h:outputText value="Nome:" />
+										<h:outputText value="#{segurancaBean.pet.nome}" styleClass="outputLabel" />
+										
+										<h:outputText value="Raça:" />
+										<h:outputText value="#{segurancaBean.pet.raca}" styleClass="outputLabel" />
+										
+										<h:outputText value="Data Nasc.:" />
+										<h:outputText value="#{segurancaBean.pet.dataNascimento}" styleClass="outputLabel" >
+											<f:convertDateTime pattern="dd/MM/yyyy"/>
+										</h:outputText>
+										
+										<h:outputText value="Num. Serie:" />
+										<h:outputText value="#{segurancaBean.pet.numeroSerie}" styleClass="outputLabel" />
+										
+									</h:panelGrid>									
+								</p:panel>
+								
+							</h:panelGrid>
+							
+							<p:commandButton action="#{segurancaBean.salvarAutocadastro}" value="Salvar" update="growGeral" />
+							
+						</p:panel>
+					</p:tab>
+
+
+				</p:wizard>
+
+
+			</h:form>
+
+		</ui:define>
+
+	</ui:decorate>
+</h:body>
+
+</html>

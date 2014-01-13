@@ -29,6 +29,7 @@ import br.com.sixinf.ferramentas.persistencia.Entidade;
 public class Usuario implements Entidade, Serializable {
 
 	private static final long serialVersionUID = 1L;
+	public static final String SESSION_ID = "usuario";
 	
 	@Id
 	@SequenceGenerator(name="seqUsuario", sequenceName="usuario_id_seq")
@@ -37,7 +38,7 @@ public class Usuario implements Entidade, Serializable {
 	private Long id;
 	
 	@Column(name = "usuario", length = 30)
-	private String usuario;
+	private String nomeUsuario;
 	
 	@Column(name = "senha", length = 30)
 	private String senha;
@@ -48,11 +49,8 @@ public class Usuario implements Entidade, Serializable {
 	@Column(name = "tipo_usuario", length = 10)
 	private String tipoUsuario;
 	
-	@Column(name = "nome", length = 50)
+	@Column(name = "nome", length = 500)
 	private String nome;
-	
-	@Column(name = "sobrenome", length = 150)
-	private String sobrenome;
 	
 	@Column(name = "cpf", length = 11)
 	private String cpf;
@@ -62,6 +60,12 @@ public class Usuario implements Entidade, Serializable {
 	
 	@Column(name = "melhor_dia_vencimento")
 	private Integer melhorDiaVencimento;
+	
+	@Column(name = "fone_celular", length = 15)
+	private String foneCelular;
+	
+	@Column(name = "fone_contato", length = 15)
+	private String foneContato;
 	
 	@Column(name = "situacao", length = 10)
 	private String situacao;
@@ -92,19 +96,18 @@ public class Usuario implements Entidade, Serializable {
 		this.id = id;
 	}
 
-	public Usuario(Long id, String usuario, String senha, Boolean primeiroLogin,
-			String tipoUsuario, String nome, String sobrenome, String cpf,
+	public Usuario(Long id, String nomeUsuario, String senha, Boolean primeiroLogin,
+			String tipoUsuario, String nome, String cpf,
 			String email, Integer melhorDiaVencimento, String situacao,
 			Date dataRegistro, Character statusRegistro, Set<Conta> contas,
 			Set<Tracker> trackers, Set<Lancamento> lancamentos,
 			Set<Endereco> enderecos) {
 		this.id = id;
-		this.usuario = usuario;
+		this.nomeUsuario = nomeUsuario;
 		this.senha = senha;
 		this.primeiroLogin = primeiroLogin;
 		this.tipoUsuario = tipoUsuario;
 		this.nome = nome;
-		this.sobrenome = sobrenome;
 		this.cpf = cpf;
 		this.email = email;
 		this.melhorDiaVencimento = melhorDiaVencimento;
@@ -124,13 +127,13 @@ public class Usuario implements Entidade, Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public String getUsuario() {
-		return this.usuario;
+	
+	public String getNomeUsuario() {
+		return nomeUsuario;
 	}
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
+	public void setNomeUsuario(String nomeUsuario) {
+		this.nomeUsuario = nomeUsuario;
 	}
 
 	public String getSenha() {
@@ -163,14 +166,6 @@ public class Usuario implements Entidade, Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public String getSobrenome() {
-		return this.sobrenome;
-	}
-
-	public void setSobrenome(String sobrenome) {
-		this.sobrenome = sobrenome;
 	}
 
 	public String getCpf() {
@@ -250,12 +245,41 @@ public class Usuario implements Entidade, Serializable {
 	}
 
 	public void setEnderecos(Set<Endereco> enderecos) {
-		this.enderecos = enderecos;
+		this.enderecos = enderecos; 
+	}
+	
+	public String getFoneCelular() {
+		return foneCelular;
+	}
+
+	public void setFoneCelular(String foneCelular) {
+		this.foneCelular = foneCelular;
+	}
+
+	public String getFoneContato() {
+		return foneContato;
+	}
+
+	public void setFoneContato(String foneContato) {
+		this.foneContato = foneContato;
 	}
 
 	@Override
 	public Long getIdentificacao() {
 		return id;
 	}
-
+	
+	public String getCpfMask(){
+		return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9); 
+	}
+	
+	public String getFoneCeularMask(){
+		return "(" + foneCelular.substring(0, 2) + ")" + foneCelular.substring(2); 
+	}
+	
+	public String getFoneContatoMask(){		
+		if (foneContato != null && !foneContato.isEmpty())
+			return "(" + foneContato.substring(0, 2) + ")" + foneContato.substring(2);
+		return null;
+	}
 }

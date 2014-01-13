@@ -2,7 +2,6 @@ package br.com.sixinf.webtracker;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -10,23 +9,16 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
-import javax.sound.midi.Track;
 
-import org.apache.log4j.Logger;
-import org.primefaces.component.log.Log;
-
-import br.com.sixinf.ferramentas.Utilitarios;
 import br.com.sixinf.ferramentas.dao.DAOException;
-import br.com.sixinf.webtracker.dao.SegurancaDAO;
 import br.com.sixinf.webtracker.dao.TrackerDAO;
 import br.com.sixinf.webtracker.entidades.Pet;
-import br.com.sixinf.webtracker.entidades.Tracker;
 
 @ManagedBean
 @RequestScoped
 public class UserBean implements Serializable {
 	
-	private static final Logger LOG = Logger.getLogger(UserBean.class);
+	//private static final Logger LOG = Logger.getLogger(UserBean.class);
 	
 	private static final long serialVersionUID = 1L;
 	

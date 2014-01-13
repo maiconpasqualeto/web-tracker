@@ -167,5 +167,9 @@ public class Endereco implements Entidade, Serializable {
 	public Long getIdentificacao() {
 		return id;
 	}
+	
+	public String getCepMask(){
+		return cep.substring(0, 5) + "-" + cep.substring(5, 8); 
+	}
 
 }
