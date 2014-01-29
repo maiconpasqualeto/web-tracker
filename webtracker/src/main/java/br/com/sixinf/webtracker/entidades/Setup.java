@@ -9,11 +9,9 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -52,9 +50,6 @@ public class Setup implements Entidade, Serializable {
 	@Column(name = "status_registro", length = 1)
 	private Character statusRegistro;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "setup")
-	private Set<Lancamento> lancamentos;
-
 	public Setup() {
 	}
 
@@ -71,7 +66,6 @@ public class Setup implements Entidade, Serializable {
 		this.valorTracker = valorTracker;
 		this.quantidadeParcelas = quantidadeParcelas;
 		this.statusRegistro = statusRegistro;
-		this.lancamentos = lancamentos;
 	}
 	
 	public Date getDataHoraCadastro() {
@@ -112,14 +106,6 @@ public class Setup implements Entidade, Serializable {
 
 	public void setStatusRegistro(Character statusRegistro) {
 		this.statusRegistro = statusRegistro;
-	}
-
-	public Set<Lancamento> getLancamentos() {
-		return this.lancamentos;
-	}
-
-	public void setLancamentos(Set<Lancamento> lancamentos) {
-		this.lancamentos = lancamentos;
 	}
 
 	public Long getId() {

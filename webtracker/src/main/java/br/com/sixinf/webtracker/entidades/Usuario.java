@@ -29,7 +29,8 @@ import br.com.sixinf.ferramentas.persistencia.Entidade;
 public class Usuario implements Entidade, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static final String SESSION_ID = "usuario";
+	public static final String SESSION_NOME_USUARIO = "usuario";
+	public static final String SESSION_TIPO_USUARIO = "tipo_usuario";
 	
 	@Id
 	@SequenceGenerator(name="seqUsuario", sequenceName="usuario_id_seq")
@@ -81,7 +82,7 @@ public class Usuario implements Entidade, Serializable {
 	private Set<Conta> contas = new HashSet<Conta>(0);
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
-	private Set<Tracker> trackers = new HashSet<Tracker>(0);
+	private Set<UsuarioTracker> trackers = new HashSet<UsuarioTracker>(0);
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
 	private Set<Lancamento> lancamentos = new HashSet<Lancamento>(0);
@@ -96,30 +97,6 @@ public class Usuario implements Entidade, Serializable {
 		this.id = id;
 	}
 
-	public Usuario(Long id, String nomeUsuario, String senha, Boolean primeiroLogin,
-			String tipoUsuario, String nome, String cpf,
-			String email, Integer melhorDiaVencimento, String situacao,
-			Date dataRegistro, Character statusRegistro, Set<Conta> contas,
-			Set<Tracker> trackers, Set<Lancamento> lancamentos,
-			Set<Endereco> enderecos) {
-		this.id = id;
-		this.nomeUsuario = nomeUsuario;
-		this.senha = senha;
-		this.primeiroLogin = primeiroLogin;
-		this.tipoUsuario = tipoUsuario;
-		this.nome = nome;
-		this.cpf = cpf;
-		this.email = email;
-		this.melhorDiaVencimento = melhorDiaVencimento;
-		this.situacao = situacao;
-		this.dataRegistro = dataRegistro;
-		this.statusRegistro = statusRegistro;
-		this.contas = contas;
-		this.trackers = trackers;
-		this.lancamentos = lancamentos;
-		this.enderecos = enderecos;
-	}
-	
 	public Long getId() {
 		return id;
 	}
@@ -224,11 +201,11 @@ public class Usuario implements Entidade, Serializable {
 		this.contas = contas;
 	}
 
-	public Set<Tracker> getTrackers() {
+	public Set<UsuarioTracker> getTrackers() {
 		return this.trackers;
 	}
 
-	public void setTrackers(Set<Tracker> trackers) {
+	public void setTrackers(Set<UsuarioTracker> trackers) {
 		this.trackers = trackers;
 	}
 
@@ -273,7 +250,7 @@ public class Usuario implements Entidade, Serializable {
 		return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9); 
 	}
 	
-	public String getFoneCeularMask(){
+	public String getFoneCelularMask(){
 		return "(" + foneCelular.substring(0, 2) + ")" + foneCelular.substring(2); 
 	}
 	

@@ -43,11 +43,17 @@
    </servlet-mapping>
 
    <welcome-file-list>
-     <welcome-file>pages/login.xhtml</welcome-file>
+     <welcome-file>pages/home.xhtml</welcome-file>
    </welcome-file-list>
    
    <listener>
 	 <listener-class>br.com.sixinf.webtracker.listener.WebMediaListener</listener-class>
    </listener>
+   
+   <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
 
 </web-app>

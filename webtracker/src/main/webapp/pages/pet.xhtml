@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<h:head>
+	<script type='text/javascript'>
+		//<![CDATA[
+		function handlePlanoRequest(xhr, status, args) {  
+	        if( !args.validationFailed && args.abreDialog ) {  
+	            PF('dlg').show();
+	        } 
+	    }
+		
+		function handleConcluiInclusao(xhr, status, args) {  
+	        if( !args.validationFailed && args.fechaDialog ) {  
+	            PF('dlg').hide();
+	        }
+	    }
+		//]]>
+	</script>
+</h:head>
+<h:body>
+
+	<ui:decorate template="/layout/tpl_limpo.xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="principal">
+	
+		<h:form  id="frmPet">
+	
+			<p:panel id="pnlPet" header="Pets">
+			
+				<p:growl id="growPet" showDetail="false"/>
+				
+				<h:panelGrid id="pnlCampos" columns="2" style="vertical-align: top;" >
+				
+					<p:panelGrid columns="2" >
+						
+						<p:outputLabel value="ID" for="txtID" />
+						<p:inputText 
+							id="txtID" 
+							value="#{petBean.pet.id}"
+							readonly="true">
+							<p:watermark for="txtID" value="ID Automático" />
+						</p:inputText>
+			            
+						<p:outputLabel value="Nome:" for="txtNome" />
+						<p:inputText id="txtNome" value="#{petBean.pet.nome}" required="true" label="Nome">
+							<p:focus for="txtNome"/>
+						</p:inputText>
+						
+						<p:outputLabel value="Raça:" for="txtRaca"/>
+						<p:inputText id="txtRaca" value="#{petBean.pet.raca}" 
+							required="true" label="Raça"/>
+						
+						<p:outputLabel value="Data Nascimento:" for="dtNasc" />
+						<p:calendar id="dtNasc" value="#{petBean.pet.dataNascimento}" maxdate="now"
+								pattern="dd/MM/yyyy" size="25" placeholder=" " required="true" locale="pt_BR"
+								mode="popup" maxlength="10" label="Data de Nascimento" navigator="true" >
+							<p:watermark value="Clique aqui para calendário" for="dtNasc"/>
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:calendar>
+					</p:panelGrid>		
+					<h:panelGrid columns="1" rendered="#{not empty petBean.qrcode}">
+						<pe:qrCode id="qrCodeElem" 
+					           renderMethod="canvas"   
+					           renderMode="2"   
+					           text="#{petBean.qrcode}"  
+					           label="Lord PetTracker"  
+					           size="130"                   
+					           fillColor="#000"  
+					           fontName="Ubuntu"  
+					           fontColor="#01A9DB"  
+					           ecLevel="H"                     
+					           radius="0.5"/>  
+					</h:panelGrid>
+				
+				</h:panelGrid>
+				
+				<p:commandButton 
+						value="Salvar"
+						action="#{petBean.validaESalvaPet}"
+						update="growPet,tblPets,pnlCampos"
+						oncomplete="handlePlanoRequest(xhr, status, args)" />
+						
+				<p:commandButton id="btnNovo" value="Novo" update="tblPets,pnlCampos" 
+					process="@this" actionListener="#{petBean.reset}" resetValues="true"  />
+				
+				<p:separator id="separator"/>  
+				
+				<p:dataTable 
+					id="tblPets"
+					emptyMessage="Lista vazia" 
+					value="#{petBean.pets}" var="p"
+					selectionMode="single" rowKey="#{p.id}"
+					selection="#{petBean.petSelecionado}"
+					paginator="true" rows="10" >
+					
+					<p:ajax event="rowSelect" listener="#{petBean.onSelect}"   
+                    	update=":frmPet:pnlCampos"/> 
+					
+					<p:column>
+						<f:facet name="header">Nome</f:facet>
+						<h:outputText id="lblListaNome" value="#{p.nome}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Raça</f:facet>
+						<h:outputText value="#{p.raca}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Data Nascimento: </f:facet>
+						<h:outputText value="#{p.dataNascimento}" >
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+										
+					<p:column>
+						<f:facet name="header">Número Série Rastreador</f:facet>
+						<h:outputText value="#{p.numeroSerie}" />
+					</p:column>
+					
+					<p:column headerText="Delete" style="width:50px">
+						<f:facet name="header">Ação</f:facet>
+		                <p:commandButton value="Apagar" process="@this" actionListener="#{petBean.deletePet(p)}"
+		                	id="btnApagar" title="Apagar o registro" 
+		                	update=":frmPet:growPet,tblPets,:frmPet:pnlCampos">
+		                	
+		                	<p:confirm header="Confirmação de exclusão" 
+		                		message="Confirma apagar registro?" icon="ui-icon-alert" />
+                            
+		                </p:commandButton>
+		            </p:column>
+				</p:dataTable>
+				
+				<p:confirmDialog global="true">
+				    <p:commandButton value="Sim" styleClass="ui-confirmdialog-yes"  />
+				    <p:commandButton value="Não" styleClass="ui-confirmdialog-no" />
+				</p:confirmDialog>				
+			
+			</p:panel>
+		
+			<p:dialog id="dlgPlanos" widgetVar="dlg" 
+				modal="true" closable="false" maximizable="false" draggable="false" resizable="false">
+				
+				<p:selectOneRadio id="slPlano" layout="custom" value="#{petBean.nomePlano}" >
+					<f:selectItems value="#{petBean.planos}" var="p" itemLabel="#{p.nomePlano}" itemValue="#{p.nomePlano}" />
+					<p:ajax event="change" update="pnlSerial" listener="#{petBean.planoChange}"/>
+				</p:selectOneRadio>
+				
+				<h:panelGrid columns="5"
+					style="border-collapse: collapse;"
+				 	columnClasses="gridPlanoDescricao,gridPlanoTipo1,gridPlanoTipo2,gridPlanoTipo1,gridPlanoTipo2" >
+					
+					<h:outputText value="" />
+					<h:outputText value="Plano Alternativo" />
+					<h:outputText value="Plano Prata" />
+					<h:outputText value="Plano Ouro" />
+					<h:outputText value="Plano Diamante" />								
+					
+					<h:outputText value="Informações através de QR-code" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					<h:outputText value="" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px"/>
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					
+					<h:outputText value="Rastreamento em tempo real com GPS e a-GPS" />
+					<h:outputText value="" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />								
+					
+					<h:outputText value="Acompanhamento do trajeto percorrido" />
+					<h:outputText value="" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					
+					<h:outputText value="Cerca digital eletrônica" />
+					<h:outputText value="" />
+					<h:outputText value="" />
+					<h:outputText value="" />
+					<p:graphicImage value="/images/tick_symbol.png" height="20px" />
+					
+					<h:outputText value="Valor Mensal" />
+					<h:outputText value="R$ #{autoCadastroBean.planos[0].valor}" />
+					<h:outputText value="R$ #{autoCadastroBean.planos[1].valor}" />
+					<h:outputText value="R$ #{autoCadastroBean.planos[2].valor}" />
+					<h:outputText value="R$ #{autoCadastroBean.planos[3].valor}" />
+					
+					<h:outputText value="" />
+					<p:radioButton id="rdAlt" for="slPlano" itemIndex="0" />
+					<p:radioButton id="rdPrata" for="slPlano" itemIndex="1" />
+					<p:radioButton id="rdOuro" for="slPlano" itemIndex="2" />
+					<p:radioButton id="rdDiamante" for="slPlano" itemIndex="3" />
+					
+				</h:panelGrid>
+				
+				<h:panelGrid columns="1" id="pnlSerial" style="border-collapse: collapse; margin-top: 20px; margin-bottom: 20px; height: 30px;">
+					
+					<p:inputText id="txtNumeroSerie" value="#{petBean.pet.numeroSerie}" 
+			        		required="true" rendered="#{petBean.renderSerial}" size="25">
+						<p:watermark for="txtNumeroSerie" value="Num. de Série do rastreador" />
+					</p:inputText>
+				
+				</h:panelGrid>
+				
+				<p:separator />  
+				
+				<p:commandButton 
+						value="Concluir"
+						action="#{petBean.salvarPet}"
+						update="txtNumeroSerie,growPet"
+						oncomplete="handleConcluiInclusao(xhr, status, args);" />
+				
+				<p:commandButton id="btnFechar" value="Fechar"  actionListener="#{petBean.fechaAba}"
+					process="@this" onclick="PF('dlg').hide();"  />
+				
+			</p:dialog>
+			
+		</h:form>
+						
+	</ui:define>
+	
+</ui:decorate>
+
+</h:body>
+
+</html>

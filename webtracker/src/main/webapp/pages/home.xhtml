@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<h:head>
+	<script type='text/javascript'>
+	    //<![CDATA[
+		$(function(){
+		    $('#conteudo') .css({'height': (($(window).height()-135))+'px'});
+		    $(window).resize(function(){
+		        $('#conteudo') .css({'height': (($(window).height()-135))+'px'});
+		    });
+		});
+		
+		function handleLoginRequest(xhr, status, args) {  
+	        if( !args.validationFailed && args.abreDialog ) {  
+	            PF('dlg').show();
+	        } 
+	    }
+		
+		function novaSenhaGravada(xhr, status, args) {
+			if( !args.validationFailed && args.fechaDialog ) {  
+	            PF('dlg').hide();
+	        }
+		}
+		
+		//]]>
+	</script>
+</h:head>
+<h:body>
+
+	<ui:decorate template="../layout/tpl_off.xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui">
+		
+		<ui:define name="topo">
+			<ui:include src="../layout/topo_login.xhtml"></ui:include>			
+		</ui:define>
+
+		<ui:define name="principal">
+		
+			<div id="painel1" class="painel1">
+				<h2>Seu pet 24 horas com você!</h2>
+				<h3>Não perca de vista o seu animalzinho de estimação, ele estará com você o tempo todo.</h3>
+				<p>O Pet Tracker traz pra você a tranquilidade de saber aonde seu pet está mesmo você estando distante dele.</p>
+				
+				<h:form id="frmCadastroNovo">
+				
+					<p:growl id="growCadastroNovo" showDetail="false" />
+				
+					<div id="divCadastroNovo" class="divCadastroNovo">
+						<p:inputText id="txtNome" required="true" label="Nome"
+							value="#{autoCadastroBean.usuario.nome}" styleClass="camposFormCadastroNovo" size="37">
+							<p:watermark for="txtNome" value="Seu nome" />
+							<pe:tooltip for="txtNome" value="Seu nome completo para cadastro"/>
+						</p:inputText>
+						
+						<p:inputText id="txtEmail" required="true" label="Email" size="37"
+							value="#{autoCadastroBean.usuario.email}" styleClass="camposFormCadastroNovo">
+							<f:validator validatorId="emailValidator" />
+							<p:watermark for="txtEmail" value="Seu email" />
+							<pe:tooltip for="txtEmail" value="Seu endereço de email"/>
+						</p:inputText>
+						
+						<p:inputText id="txtNomePet" required="true" label="Nome Pet" size="37"
+							value="#{autoCadastroBean.pet.nome}" styleClass="camposFormCadastroNovo">
+							<p:watermark for="txtNomePet" value="Nome do seu Pet" />
+							<pe:tooltip for="txtNomePet" value="O nome do seu animalzinho de estimação"/>
+						</p:inputText>
+						
+					</div>
+								
+					<p:commandButton id="btnNovoCadastro" value="Cadastre-se agora mesmo" 
+						  styleClass="btn-convert" update="frmCadastroNovo" style="width: 100%;"
+						  action="#{autoCadastroBean.redireciona}">
+					</p:commandButton>
+					
+				</h:form>
+				
+			</div>
+			
+		</ui:define>
+		
+
+	</ui:decorate>
+</h:body>
+
+</html>

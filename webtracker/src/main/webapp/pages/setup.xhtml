@@ -1,0 +1,56 @@
+<ui:composition template="/layout/tpl_limpo.xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="principal">
+	
+		<p:panel id="pnlSetup" header="Setup">
+		
+			<h:form  id="frmSetup">
+			
+				<p:growl id="growSetup" showDetail="false"/>
+				
+				<p:panelGrid columns="2" id="pnlCampos">
+					
+					<p:outputLabel value="ID" for="txtID" />
+					<p:inputText 
+						id="txtID" 
+						value="#{setupBean.setup.id}"
+						readonly="true">
+						<p:watermark for="txtID" value="ID Automático" />
+					</p:inputText>
+		            
+					<p:outputLabel value="Valor Mensalidade:" for="txtValorMensalidade" />
+					<p:inputText id="txtValorMensalidade" value="#{setupBean.setup.valorMensalidade}" required="true" label="Valor Mensalidade">
+						<p:focus for="txtValorMensalidade"/>
+						<f:convertNumber currencySymbol="R$" groupingUsed="true"
+                     		maxFractionDigits="2" type="currency" />
+					</p:inputText>
+					
+					<p:outputLabel value="Valor Tracker:" for="txtValorTracker"/>
+					<p:inputText id="txtValorTracker" value="#{setupBean.setup.valorTracker}" 
+						required="true" label="Valor Tracker">						
+						<f:convertNumber currencySymbol="R$" groupingUsed="true"
+                     		maxFractionDigits="2" type="currency" />
+					</p:inputText>
+					
+					<p:outputLabel value="Quantidade Parcelas" for="txtQuantidadeParcelas"/>
+					<p:inputText id="txtQuantidadeParcelas" value="#{setupBean.setup.quantidadeParcelas}" 
+						required="true" label="Quantidade Parcelas"/>
+
+				</p:panelGrid>
+				
+				<p:commandButton 
+						value="Salvar"
+						action="#{setupBean.salvar}"
+						update="growSetup,pnlCampos"/>
+								
+			</h:form>
+			
+		</p:panel>
+						
+	</ui:define>
+	
+</ui:composition>

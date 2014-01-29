@@ -14,13 +14,17 @@
 			<h:form>
 				<p:menubar style="margin: auto; border: 0; background: none; width: 300px;">					
 					<p:menuitem value="Home" url="/pages/principal.xhtml" />
-					<p:submenu label="Cadastros" style="margin-left: 10px" >
-						<p:menuitem value="Trackers" url="#" />
-						<p:menuitem value="Usuarios" url="#" />
+					<p:submenu label="Cadastros" style="margin-left: 10px" rendered="#{segurancaBean.renderCadastro}">
+						<p:menuitem value="Pets" url="/pages/pet.xhtml" rendered="#{segurancaBean.renderPet}"/>
+						<p:menuitem value="Usuarios" url="/pages/usuario.xhtml" rendered="#{segurancaBean.renderUsuario}" />
+						<p:menuitem value="Trackers (fabricante)" url="/pages/tracker.xhtml" 
+							 rendered="#{segurancaBean.renderTracker}" />
+					    <p:menuitem value="Setup" url="/pages/setup.xhtml" 
+							 rendered="#{segurancaBean.renderSetup}" />
 					</p:submenu>
-					<p:submenu label="Relatórios" style="margin-left: 10px" >
-						<p:menuitem value="Rastreamento por período" url="#" />
-						<p:menuitem value="Financeiro" url="#" />
+					<p:submenu label="Relatórios" style="margin-left: 10px" rendered="#{segurancaBean.renderRelatorio}">
+						<p:menuitem value="Rastreamento por período" url="#"  rendered="#{segurancaBean.renderRelRastreamento}" />
+						<p:menuitem value="Financeiro" url="#"  rendered="#{segurancaBean.renderRelFinanceiro}"  />
 					</p:submenu>
 					<p:menuitem value="Sair" action="#{segurancaBean.logoff}" style="margin-left: 10px" />
 				</p:menubar>

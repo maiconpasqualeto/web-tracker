@@ -42,6 +42,7 @@ public class SegurancaDAO extends BridgeBaseDAO {
 			StringBuilder hql = new StringBuilder();
 			hql.append("select u from Usuario u ");
 			hql.append("where u.nomeUsuario = :nomeUsuario ");
+			hql.append("and u.statusRegistro = 'A' ");
 			TypedQuery<Usuario> q = em.createQuery(hql.toString(), Usuario.class);
 			q.setParameter("nomeUsuario", nomeUsuario);
 			q.setMaxResults(1);

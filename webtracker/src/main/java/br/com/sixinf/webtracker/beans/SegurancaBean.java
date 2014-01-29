@@ -3,50 +3,76 @@
  */
 package br.com.sixinf.webtracker.beans;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
-import org.primefaces.event.FlowEvent;
-import org.primefaces.json.JSONException;
-import org.primefaces.json.JSONObject;
+import org.primefaces.context.RequestContext;
 
-import br.com.sixinf.ferramentas.Utilitarios;
 import br.com.sixinf.ferramentas.log.LoggerException;
 import br.com.sixinf.webtracker.TrackerHelper;
-import br.com.sixinf.webtracker.dao.SegurancaDAO;
-import br.com.sixinf.webtracker.dao.TrackerDAO;
-import br.com.sixinf.webtracker.entidades.Endereco;
-import br.com.sixinf.webtracker.entidades.Pet;
+import br.com.sixinf.webtracker.entidades.TipoUsuario;
 import br.com.sixinf.webtracker.entidades.Usuario;
 import br.com.sixinf.webtracker.facade.SegurancaFacade;
-import br.com.sixinf.webtracker.facade.TrackerFacade;
 
 /**
  * @author maicon
  *
  */
 @ManagedBean(name="segurancaBean")
-@ViewScoped
+@SessionScoped
 public class SegurancaBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = Logger.getLogger(SegurancaBean.class);
+	//private static final Logger LOG = Logger.getLogger(SegurancaBean.class);
 	
 	private Usuario usuario = new Usuario();
-	private Pet pet = new Pet();
-	private Endereco endereco = new Endereco();
+	/*private Pet pet = new Pet();
+	private Endereco endereco = new Endereco();*/
 	private String confirmaSenha;
+	
+	// permissoes
+	public static List<String> permissoesMaster = new ArrayList<String>();
+	public static List<String> permissoesAdmin = new ArrayList<String>();
+	public static List<String> permissoesUser = new ArrayList<String>();
+	
+	// render menus
+	private boolean renderRelatorio;
+	private boolean renderCadastro;
+	
+	// reder submenus
+	private boolean renderPrincipal;
+	private boolean renderPet;
+	private boolean renderTracker;
+	private boolean renderUsuario;
+	private boolean renderRelRastreamento;
+	private boolean renderRelFinanceiro;
+	private boolean renderSetup;
+	
+	static {
+		// MASTER
+		permissoesMaster.add("principal.xhtml");
+		permissoesMaster.add("pet.xhtml");
+		permissoesMaster.add("tracker.xhtml");
+		permissoesMaster.add("usuario.xhtml");
+		permissoesMaster.add("setup.xhtml");
+		
+		// ADMIN
+		permissoesAdmin.add("principal.xhtml");
+		permissoesAdmin.add("tracker.xhtml");
+		permissoesAdmin.add("usuario.xhtml");
+		
+		// USUARIO
+		permissoesUser.add("principal.xhtml");
+		permissoesUser.add("pet.xhtml");
+		
+	}
 	
 	public Usuario getUsuario() {
 		return usuario;
@@ -56,14 +82,6 @@ public class SegurancaBean implements Serializable {
 		this.usuario = usuario;
 	}
 	
-	public Pet getPet() {
-		return pet;
-	}
-
-	public void setPet(Pet pet) {
-		this.pet = pet;
-	}
-
 	public String getConfirmaSenha() {
 		return confirmaSenha;
 	}
@@ -72,29 +90,102 @@ public class SegurancaBean implements Serializable {
 		this.confirmaSenha = confirmaSenha;
 	}
 
-	public Endereco getEndereco() {
-		return endereco;
+	
+	public boolean isRenderPrincipal() {
+		return renderPrincipal;
 	}
 
-	public void setEndereco(Endereco endereco) {
-		this.endereco = endereco;
+	public void setRenderPrincipal(boolean renderPrincipal) {
+		this.renderPrincipal = renderPrincipal;
 	}
-	
+
+	public boolean isRenderPet() {
+		return renderPet;
+	}
+
+	public void setRenderPet(boolean renderPet) {
+		this.renderPet = renderPet;
+	}
+
+	public boolean isRenderTracker() {
+		return renderTracker;
+	}
+
+	public void setRenderTracker(boolean renderTracker) {
+		this.renderTracker = renderTracker;
+	}
+
+	public boolean isRenderUsuario() {
+		return renderUsuario;
+	}
+
+	public void setRenderUsuario(boolean renderUsuario) {
+		this.renderUsuario = renderUsuario;
+	}
+
+	public boolean isRenderRelRastreamento() {
+		return renderRelRastreamento;
+	}
+
+	public void setRenderRelRastreamento(boolean renderRelRastreamento) {
+		this.renderRelRastreamento = renderRelRastreamento;
+	}
+
+	public boolean isRenderRelFinanceiro() {
+		return renderRelFinanceiro;
+	}
+
+	public void setRenderRelFinanceiro(boolean renderRelFinanceiro) {
+		this.renderRelFinanceiro = renderRelFinanceiro;
+	}
+
+	public boolean isRenderRelatorio() {
+		return renderRelatorio;
+	}
+
+	public void setRenderRelatorio(boolean renderRelatorio) {
+		this.renderRelatorio = renderRelatorio;
+	}
+
+	public boolean isRenderCadastro() {
+		return renderCadastro;
+	}
+
+	public void setRenderCadastro(boolean renderCadastro) {
+		this.renderCadastro = renderCadastro;
+	}
+
+	public boolean isRenderSetup() {
+		return renderSetup;
+	}
+
+	public void setRenderSetup(boolean renderSetup) {
+		this.renderSetup = renderSetup;
+	}
+
 	/**
 	 * 
 	 * @return
 	 */
 	public String logar(){
 		
-		boolean valido = SegurancaFacade.getInstance().logar(
-				usuario.getNomeUsuario(), usuario.getSenha());
+		SegurancaFacade.RetornoLogin retorno = SegurancaFacade.getInstance().logar(usuario);
 		
-		if (valido) {
+		if (retorno.isValido()) {
 			HttpSession sess = TrackerHelper.getSession();
-			sess.setAttribute(Usuario.SESSION_ID, usuario.getNomeUsuario());
+			sess.setAttribute(Usuario.SESSION_NOME_USUARIO, usuario.getNomeUsuario());
+			sess.setAttribute(Usuario.SESSION_TIPO_USUARIO, usuario.getTipoUsuario());
+			
+			carregaRenderMenusUsuario();
 			
 			return "/pages/principal.xhtml?faces-redirect=true";
 		} else {
+			if ("Definir Senha".equals(retorno.getMensagem())) {
+				RequestContext context = RequestContext.getCurrentInstance();
+				context.addCallbackParam("abreDialog", true);
+				return null;
+			}
+				
 			FacesMessage m = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, 
 					"Usuário ou senha inválidos.", 
@@ -111,7 +202,7 @@ public class SegurancaBean implements Serializable {
 	public String logoff(){
 		TrackerHelper.getSession().invalidate();
 		
-		return "/pages/login.xhtml?faces-redirect=true";
+		return "/pages/home.xhtml?faces-redirect=true";
 	}
 			
 	/**
@@ -121,118 +212,99 @@ public class SegurancaBean implements Serializable {
 	public String registrar(){
 		return "pages/autocadastro.xhtml";
 	}
-	
-	/**
-	 * 
-	 * @param event
-	 * @return
-	 */
-	public String onFlowProcess(FlowEvent event) { 
-        return event.getNewStep();
-    }  
-	
-	public void buscarCEP(ValueChangeEvent event){
-		String cep = event.getNewValue().toString();
-		InputStream is = null;
-		HttpURLConnection connection = null;
 		
-		try {
-			// Objeto URL
-			URL url = new URL("http://cep.republicavirtual.com.br/web_cep.php?formato=json&cep=" + cep);
-			
-			try {
-			
-				connection = (HttpURLConnection) url.openConnection();
-				connection.setRequestProperty("Request-Method", "GET");
-				connection.setDoInput(true);
-				connection.setDoOutput(false);
-				connection.connect();
-				
-				is = connection.getInputStream();
-				byte[] buf = Utilitarios.fazLeituraStreamEmByteArray(is);
-				JSONObject jo = new JSONObject(new String(buf));
-				String resultado = jo.getString("resultado");
-				if (resultado.equals("1")) { // cep completo
-					String uf = jo.getString("uf");
-					String municipio = jo.getString("cidade");
-					String tipoLogradouro = jo.getString("tipo_logradouro");
-					String logradouro = jo.getString("logradouro");
-					String bairro = jo.getString("bairro");
-					this.endereco.setUf(uf);
-					this.endereco.setMunicipio(municipio);
-					this.endereco.setLogradouro(tipoLogradouro + " " + logradouro);
-					this.endereco.setBairro(bairro);
-				} else 
-					if (resultado.equals("2")) { // cep único
-						String uf = jo.getString("uf");
-						String municipio = jo.getString("cidade");
-						this.endereco.setUf(uf);
-						this.endereco.setMunicipio(municipio);
-					}
-				
-			} finally {
-				if (is != null)
-					is.close();
-			}
-			
-		} catch (IOException | JSONException e) {
-			LOG.error("Erro ao buscar CEP", e);
-		}
-	}
-	
 	/**
-	 * Faz as validações e grava o auto cadastro
 	 * 
 	 * @return
 	 */
-	public String salvarAutocadastro(){
-		String retorno = "";
-			
-		try {
-			
-			validaAutoCadastro();
-			
-			Pet p = TrackerDAO.getInstance().buscarTodosPetsPeloSerial(pet.getNumeroSerie());
-			if (p == null) {
-				throw new LoggerException(
-						"Aparelho ainda não cadastrado, entre em contato com o fornecedor", LOG);
-			}
-			p.setNome(pet.getNome());
-			p.setRaca(pet.getRaca());
-			p.setDataNascimento(pet.getDataNascimento());
-			
-			TrackerFacade.getInstance().salvarAutoCadastro(usuario, endereco, p);
-			
-			HttpSession sess = TrackerHelper.getSession();
-			sess.setAttribute(Usuario.SESSION_ID, usuario.getNomeUsuario());
-			
-			retorno = "/pages/principal.xhtml?faces-redirect=true";
-					
-		} catch (LoggerException e) {
-			FacesMessage m = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, 
-					e.getLocalizedMessage(), 
-					e.getLocalizedMessage());
-			FacesContext.getCurrentInstance().addMessage(null, m);
-		}
-		return retorno;
-		
-	}
-	
-	private void validaAutoCadastro() throws LoggerException{
-		Usuario u = SegurancaDAO.getInstance().buscarUsuario(usuario.getNomeUsuario());
-		if (u != null) {
-			throw new LoggerException(
-					"Já existe usuário com esse nome.", LOG);
-		}
-	}
-	
 	public String getUsuarioSessao(){
 		return TrackerHelper.getUsuarioSessao();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String esqueceuSenha(){
 		return "";
 	}
-
+	
+	/**
+	 * 
+	 */
+	public void carregaRenderMenusUsuario(){
+		TipoUsuario t = TipoUsuario.valueOf(usuario.getTipoUsuario());
+		switch (t){
+		
+		case MASTER:
+			renderPrincipal = true;
+			renderPet = true;
+			renderTracker = true;
+			renderUsuario = true;
+			
+			renderRelRastreamento = true;
+			renderRelFinanceiro = true;	
+			renderSetup = true;
+			
+			break;
+			
+		case ADMIN:
+			renderPrincipal = true;			
+			renderTracker = true;
+			renderUsuario = true;
+			
+			renderPet = false;
+			renderRelRastreamento = false;
+			renderRelFinanceiro = false;
+			renderSetup = false;
+			break;
+			
+		case USER:
+			renderPrincipal = true;
+			renderPet = true;
+			
+			renderTracker = false;
+			renderUsuario = false;
+			renderRelRastreamento = false;
+			renderRelFinanceiro = false;
+			renderSetup = false;
+			break;
+			
+		}
+		
+		// MENU PAI, não esquecer
+		// se não houver nenhum submenu, não renderiza o menu pai
+		if (!renderPet && 
+				!renderUsuario &&
+				!renderTracker)
+			renderCadastro = false;
+		else 
+			renderCadastro = true;
+		
+		if (!renderRelFinanceiro &&
+				!renderRelRastreamento)
+			renderRelatorio = false;
+		else 
+			renderRelatorio = true;
+		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws LoggerException
+	 */
+	public String salvarNovaSenha() throws LoggerException{		
+		
+		SegurancaFacade.getInstance().salvarNovaSenha(usuario);
+		
+		FacesMessage m = new FacesMessage("Senha gravada com sucesso, faça o login para acessar o sistema.");
+		FacesContext.getCurrentInstance().addMessage(null, m);
+		
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.addCallbackParam("fechaDialog", true);
+		
+		return "/pages/home.xhtml";
+	}
+	
 }

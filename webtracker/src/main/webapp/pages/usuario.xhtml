@@ -1,0 +1,211 @@
+<ui:composition template="/layout/tpl_limpo.xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="principal">
+	
+		<p:panel id="pnlUsuario" header="Usuarios">
+		
+			<h:form  id="frmUsuario">
+			
+				<p:growl id="growUsuario" showDetail="false"/>
+				<h:inputHidden id="txtIdHidden" value="#{usuarioBean.usuario.id}" converter="javax.faces.Long" />
+			
+				<p:tabView id="tabViewUsuario" >
+	    			
+	    			<p:tab id="tabUsuario" title="Usuário">  
+	    			
+	    				<h:panelGrid columns="2" id="pnlCamposUsuario" rowClasses="gridRowTabs" >
+						
+							<p:panelGrid columns="2"  >
+							
+								<p:outputLabel value="ID" for="txtID" />
+								<p:inputText 
+									id="txtID" 
+									value="#{usuarioBean.usuario.id}"
+									readonly="true">
+									<p:watermark for="txtID" value="ID Automático" />
+								</p:inputText>
+					            
+								<h:outputText id="lblNome" value="Nome: *" for="txtNome" />
+								<p:inputText id="txtNome" required="true" label="Nome"
+									value="#{usuarioBean.usuario.nome}" size="62" >
+									<p:focus for="txtNome"/>
+								</p:inputText>
+								
+								<h:outputText value="CPF: *" />
+								<p:inputMask required="true" label="CPF" mask="999.999.999-99"
+									value="#{usuarioBean.usuario.cpf}" size="12" converter="inputMaskConverter">
+									<f:validator validatorId="cpfValidator" />
+								</p:inputMask>
+			
+								<h:outputText value="Email: *" />
+								<p:inputText required="true" label="Email"
+									value="#{usuarioBean.usuario.email}" size="30">
+									<f:validator validatorId="emailValidator" />
+								</p:inputText>
+								
+								<h:outputText value="Melhor data venc.: *" />
+								<p:selectOneMenu value="#{usuarioBean.usuario.melhorDiaVencimento}" 
+									required="true" label="Melhor data vencimento" >  
+						            <f:selectItem itemLabel="Selecione" itemValue="" />  
+						            <f:selectItem itemLabel="10" itemValue="10" />  
+						            <f:selectItem itemLabel="15" itemValue="15" />  
+						            <f:selectItem itemLabel="17" itemValue="17" />
+						            <f:selectItem itemLabel="20" itemValue="20" />  
+						        </p:selectOneMenu> 
+						        
+							</p:panelGrid>
+							<p:panelGrid columns="2" >
+								<h:outputText value="Celular: * " />
+								<p:inputMask required="true" label="Celular" mask="(99)99999999"
+									value="#{usuarioBean.usuario.foneCelular}" size="12" converter="inputMaskConverter">
+								</p:inputMask>
+								
+								<h:outputText value="Telefone de contato: " />
+								<p:inputMask label="Telefone de contato" mask="(99)99999999"
+									value="#{usuarioBean.usuario.foneContato}" size="12" converter="inputMaskConverter">
+								</p:inputMask>
+			
+								<h:outputText value="Nome de usuário: *" />
+								<p:inputText required="true" label="Nome de usuário"
+									value="#{usuarioBean.usuario.nomeUsuario}" size="30"
+									validatorMessage="Nome de usuário não pode conter espaços nem caracteres especiais, só letras">
+									<f:validateRegex pattern="[a-zA-Z]*" />
+								</p:inputText>
+								
+								<h:outputText value="Tipo Usuário: *" />
+								<p:selectOneMenu id="cmbTipoUsuario" value="#{usuarioBean.usuario.tipoUsuario}" 
+									required="true" label="Tipo de Usuário">
+									<f:selectItem itemLabel="Selecione um tipo" itemValue="" />
+									<f:selectItems value="#{usuarioBean.tiposUsuario}" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+						
+						</h:panelGrid>
+					</p:tab>
+					
+					<p:tab id="tabEndereco" title="Endereço">  
+						<h:panelGrid columns="2" id="pnlCamposEndereco" rowClasses="gridRowTabs">
+							<p:panelGrid columns="2" >
+								<h:outputText value="CEP: *" />
+								<p:inputMask id="txtCep" required="true" label="CEP" mask="99999-999"
+									value="#{usuarioBean.endereco.cep}"
+									valueChangeListener="#{usuarioBean.buscarCEP}" size="8"
+									converter="inputMaskConverter">
+									<p:focus for="txtCep" />
+									<p:ajax event="blur" process="@this" update="txtLogradouro, txtBairro, txtMunicipio, txtUf"/>
+								</p:inputMask>
+	
+								<h:outputText value="Logradouro: *" />
+								<p:inputText id="txtLogradouro" required="true" label="Logradouro"
+									value="#{usuarioBean.endereco.logradouro}" size="63" />
+	
+								<h:outputText value="Número: *" />
+								<p:inputText id="txtNumero" required="true" label="Número"
+									value="#{usuarioBean.endereco.numero}" size="8" />
+	
+								<h:outputText value="Complemento: " />
+								<p:inputText label="Complemento"
+									value="#{usuarioBean.endereco.complemento}" size="15" />
+
+								<h:outputText value="Bairro: *" />
+								<p:inputText id="txtBairro" required="true" label="Bairro"
+									value="#{usuarioBean.endereco.bairro}" size="15" />
+								
+							</p:panelGrid>
+							<p:panelGrid columns="2" >
+								<h:outputText value="Município: *" />
+								<p:inputText id="txtMunicipio" required="true" label="Municipio"
+									value="#{usuarioBean.endereco.municipio}" size="40" />
+	
+								<h:outputText value="UF: *" />
+								<p:inputText id="txtUf" required="true" label="UF"
+									value="#{usuarioBean.endereco.uf}" size="2" />
+							</p:panelGrid>
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+				
+				<p:commandButton id="btnSalvar" 
+						value="Salvar"
+						action="#{usuarioBean.salvarUsuario}"
+						update="growUsuario,tblUsuarios,tabViewUsuario:pnlCamposUsuario,tabViewUsuario:pnlCamposEndereco,txtIdHidden"/>
+				
+				<p:commandButton id="btnResetSenha" 
+						value="Resetar Senha"
+						action="#"/>
+						
+				<p:commandButton id="btnNovo" value="Novo" update="tblUsuarios,tabViewUsuario:pnlCamposUsuario,tabViewUsuario:pnlCamposEndereco,txtIdHidden" 
+					process="@this" actionListener="#{usuarioBean.reset}" resetValues="true"  />
+			    
+				<p:separator id="separator"/>  
+				
+				<p:dataTable 
+					id="tblUsuarios"
+					emptyMessage="Lista vazia" 
+					value="#{usuarioBean.usuarios}" var="u"
+					selectionMode="single" rowKey="#{u.id}"
+					selection="#{usuarioBean.usuarioSelecionado}"
+					paginator="true" rows="10" >
+					
+					<p:ajax event="rowSelect" listener="#{usuarioBean.onSelect}"
+                    	update=":frmUsuario:tabViewUsuario:pnlCamposUsuario,:frmUsuario:tabViewUsuario:pnlCamposEndereco,:frmUsuario:txtIdHidden"/> 
+					
+					<p:column>
+						<f:facet name="header">ID</f:facet>
+						<h:outputText value="#{u.id}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">CPF</f:facet>
+						<h:outputText value="#{u.cpf}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Nome</f:facet>
+						<h:outputText value="#{u.nome}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Nome Usuário</f:facet>
+						<h:outputText value="#{u.nomeUsuario}" />
+					</p:column>					
+										
+					<p:column>
+						<f:facet name="header">Celular</f:facet>
+						<h:outputText value="#{u.foneCelularMask}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Tipo Usuário</f:facet>
+						<h:outputText value="#{u.tipoUsuario}" />
+					</p:column>
+										
+					<p:column headerText="Delete" style="width:50px">
+						<f:facet name="header">Ação</f:facet>
+		                <p:commandButton value="Apagar" process="@this" actionListener="#{usuarioBean.deleteUsuario(u)}"
+		                	id="btnApagar" title="Confirma apagar o Registro?" 
+		                	update=":frmUsuario:growUsuario,tblUsuarios,:frmUsuario:tabViewUsuario:pnlCamposUsuario">
+		                	
+		                	<p:confirm header="Confirmação de exclusão" 
+		                		message="Apagar registro?" icon="ui-icon-alert" />
+                            
+		                </p:commandButton>
+		            </p:column>
+				</p:dataTable>
+				
+				<p:confirmDialog global="true">
+				    <p:commandButton value="Sim" styleClass="ui-confirmdialog-yes"  />
+				    <p:commandButton value="Não" styleClass="ui-confirmdialog-no" />
+				</p:confirmDialog>				
+				
+			</h:form>
+			
+		</p:panel>
+						
+	</ui:define>
+	
+</ui:composition>

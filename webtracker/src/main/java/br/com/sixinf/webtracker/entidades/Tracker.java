@@ -16,9 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -69,13 +68,16 @@ public class Tracker implements Entidade, Serializable {
 	@Column(name="status_registro")
 	private Character statusRegistro;
 	
-	@ManyToOne(targetEntity=Usuario.class, fetch=FetchType.LAZY)
-	@JoinColumn(name="id_usuario")
-	private Usuario usuario;
-		
+	@Column(name="tipo_tracker")
+	private String tipoTracker;
+	
+	@OneToOne(fetch=FetchType.LAZY, mappedBy="tracker")
+	private UsuarioTracker usuarioTracker;
+	
 	@OneToMany(mappedBy="tracker", fetch=FetchType.LAZY, cascade=CascadeType.DETACH)
 	@Cascade(org.hibernate.annotations.CascadeType.DETACH)
 	private List<Posicao> posicoes;
+	
 	
 	public Tracker() {
 	}
@@ -152,17 +154,25 @@ public class Tracker implements Entidade, Serializable {
 		this.posicoes = posicoes;
 	}
 
+	public UsuarioTracker getUsuarioTracker() {
+		return usuarioTracker;
+	}
+
+	public void setUsuarioTracker(UsuarioTracker usuarioTracker) {
+		this.usuarioTracker = usuarioTracker;
+	}
+
+	public String getTipoTracker() {
+		return tipoTracker;
+	}
+
+	public void setTipoTracker(String tipoTracker) {
+		this.tipoTracker = tipoTracker;
+	}
+
 	@Override
 	public Long getIdentificacao() {
 		return id;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
 	}
 
 }

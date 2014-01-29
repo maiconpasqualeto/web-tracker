@@ -13,14 +13,15 @@
 	<h:body>
 		<ui:composition>
 			<div id="divheader" >
-				<h:outputText value="Tracker" style="font-size:1.7em; font-weight: bold; padding-left: 310px;color: #FFF" />
+				<h:outputText value="Pet Tracker" style="font-size:1.7em; font-weight: bold; padding-left: 310px;color: #FFF" />
 			</div>
 			<div id="divusuario" style="color: #FFF;position: absolute;right:10px;top:35px;z-index:200;">
-				<h:outputText value="#{segurancaBean.usuarioSessao}"/>
+				<h:outputText value="Usuário logado: "/>
+				<h:outputText value="#{segurancaBean.usuarioSessao}" style="font-weight: bold;"/>
 			</div>
 		    <div id="divlogo" class="logo" >
 				<p:graphicImage height="70px"
-							value="/images/logo_six_png.png"/>
+							value="/images/logo_lord_petstore_3.png"/>
   			</div>
   			<div id="divbar" class="bar" >
 				<nav>

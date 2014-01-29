@@ -12,15 +12,86 @@
 	</h:head>
 	<h:body>
 		<ui:composition>
-			<style type="text/css">
-				.ui-widget { font-size: 75%; }
-			</style>
 			<div id="divheader" >
-				<h:outputText value="Tracker" style="font-size:1.7em; font-weight: bold; padding-left: 310px;color: #FFF" />
+				<h:outputText value="Pet Tracker" style="font-size:1.7em; font-weight: bold; padding-left: 310px;color: #FFF" />
 		    </div>
+		    <div id="login_bar" style="position: absolute;right:10px;top:57px;z-index:110;">
+				<h:form id="frmLogin">
+	
+					<p:growl id="growLogin" showDetail="false" />
+					
+					<p:panelGrid id="pnlCampos" styleClass="panelGridLSemBorda" >
+						<p:row>
+							<p:column>
+								<p:inputText id="txtUsuario"
+									value="#{segurancaBean.usuario.nomeUsuario}" required="true"
+									requiredMessage="Usuário deve ser preenchido">
+									<p:focus />
+									<p:watermark for="txtUsuario" value="seu usuário" />
+								</p:inputText>
+							</p:column>
+							<p:column>
+								<p:password id="txtSenha" value="#{segurancaBean.usuario.senha}" >
+									<p:watermark value="sua a senha" for="txtSenha"></p:watermark>
+								</p:password>
+							</p:column>
+							<p:column >
+								<p:commandButton id="btnLogar" value="Entrar" ajax="true"
+									update="growLogin,pnlCampos" action="#{segurancaBean.logar}" 
+									oncomplete="handleLoginRequest(xhr, status, args)"/>
+							</p:column>
+							<p:column >
+								<p:commandLink id="btnEsqueciSenha" value="Esqueci a senha"
+									action="#" />
+							</p:column>
+						</p:row>	
+						
+					</p:panelGrid>
+					
+				</h:form>
+				
+				<p:dialog id="dlgNovaSenha" widgetVar="dlg" modal="true" appendTo="@(body)"
+					resizable="false" closable="false" draggable="false" header="Nova Senha" >
+					
+					<h:form id="frmNovaSenha" >
+					
+						<p:growl id="growNovaSenha" showDetail="false" />
+	
+						<p:panelGrid columns="2" id="pnlCamposDlg">
+							
+							<p:outputLabel id="lblNovaSenha" for="txtNovaSenha" value="Nova Senha:" />
+							<p:password id="txtNovaSenha" value="#{segurancaBean.usuario.senha}" 
+								size="12" label="Nova Senha"
+								match="txtConfSenha" required="true">
+								<f:validateLength minimum="6" />
+								<p:watermark value="digite a senha" for="txtNovaSenha" />
+							</p:password>
+							<p:outputLabel id="lblConfSenha" for="txtConfSenha" value="Confirma Senha:" />
+							<p:password id="txtConfSenha" value="#{segurancaBean.usuario.senha}" 
+								required="true" size="12" label="Confirma Senha">
+								<p:watermark value="confirme a senha" for="txtConfSenha"></p:watermark>
+							</p:password>
+							
+						</p:panelGrid>
+						
+						<p:commandButton id="btnSalvar" value="Salvar" ajax="true"
+							update="frmNovaSenha"
+							actionListener="#{segurancaBean.salvarNovaSenha}" 
+							oncomplete="novaSenhaGravada(xhr, status, args)"/>
+							
+						<p:commandButton id="btnCancela" value="Cancelar" ajax="true"
+							onclick="PF('dlg').hide();" process="@this" update="pnlCamposDlg" >  
+					        <p:resetInput target="pnlCamposDlg" />  
+				        </p:commandButton>  
+						
+					</h:form>
+					
+				</p:dialog>
+					
+			</div>
 		    <div id="divlogo" class="logo" >
 				<p:graphicImage height="70px"
-							value="/images/logo_six_png.png"/>
+							value="/images/logo_lord_petstore_3.png"/>
   			</div>
   			<div id="divbar" class="bar" >
 				

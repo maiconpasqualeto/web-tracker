@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import br.com.sixinf.webtracker.beans.SegurancaBean;
+import br.com.sixinf.webtracker.entidades.TipoUsuario;
 import br.com.sixinf.webtracker.entidades.Usuario;
 
 /**
@@ -44,15 +46,58 @@ public class SegurancaFilter implements Filter {
 			HttpSession ses = req.getSession(false);
 
 			String reqURI = req.getRequestURI();
-			if (reqURI.indexOf(".xhtml") >= 0
-					&& reqURI.indexOf("login.xhtml") < 0 
-					&& reqURI.indexOf("autocadastro.xhtml") < 0
-					&& reqURI.indexOf("javax.faces.resource") < 0
-					&& (ses == null || ses.getAttribute(Usuario.SESSION_ID) == null)) {
-				req.getRequestDispatcher("/pages/login.xhtml")
+			String pagina = reqURI.substring(reqURI.lastIndexOf('/') + 1);
+			if (reqURI.contains(".xhtml")
+					&& !reqURI.contains("home.xhtml") 
+					&& !reqURI.contains("autocadastro.xhtml")
+					&& !reqURI.contains("novasenha.xhtml")
+					&& !reqURI.contains("javax.faces.resource")
+					&& (ses == null || ses.getAttribute(Usuario.SESSION_NOME_USUARIO) == null)) {
+				req.getRequestDispatcher("/pages/home.xhtml")
 						.forward(req, res);
 			} else {
-				chain.doFilter(request, response);
+				if (pagina.isEmpty() 
+						|| reqURI.contains("home.xhtml") 
+						|| reqURI.contains("autocadastro.xhtml") 
+						|| reqURI.contains("novasenha.xhtml")
+						|| reqURI.contains("principal.xhtml")
+						|| reqURI.contains("javax.faces.resource")) {
+					
+					chain.doFilter(request, response);
+					
+				} else {
+				
+					String tipoUsuario = (String) ses.getAttribute(Usuario.SESSION_TIPO_USUARIO);
+					
+					if (tipoUsuario != null && 
+							!tipoUsuario.isEmpty() &&
+							reqURI.contains(".xhtml")){
+						boolean permite = false;
+						TipoUsuario t = TipoUsuario.valueOf(tipoUsuario);
+						switch(t){
+						case MASTER:
+							if (SegurancaBean.permissoesMaster.contains(pagina))
+								permite = true;
+							break;
+						case ADMIN:
+							if (SegurancaBean.permissoesAdmin.contains(pagina))
+								permite = true;
+							break;
+						case USER:
+							if (SegurancaBean.permissoesUser.contains(pagina))
+								permite = true;
+						}
+						
+						if (permite)
+							chain.doFilter(request, response);
+						else 
+							req.getRequestDispatcher("/pages/principal.xhtml")
+								.forward(req, res);
+						
+					}
+					
+				}
+				
 			}
 			
 		} catch (Throwable t) {

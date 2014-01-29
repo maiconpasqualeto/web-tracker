@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -84,6 +85,10 @@ public class Lancamento implements Entidade, Serializable {
 	
 	@Column(name = "status_registro", length = 1)
 	private Character statusRegistro;
+	
+	@OneToOne(targetEntity=Plano.class, fetch=FetchType.LAZY)
+	@JoinColumn(columnDefinition="id_plano")
+	private Plano plano;
 
 	public Lancamento() {
 	}

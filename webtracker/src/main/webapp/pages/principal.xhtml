@@ -23,25 +23,38 @@
 		function updateMarker(title, lati, longi){
 			var gmap = PF('mapVar').getMap();
 			var markers = gmap.markers;
-			if (!markers) {
+			if (!markers) 
 				gmap.markers = new Array();
+						
+			if ( !encontrouMarker(markers, title) ) {
 				var marker = new google.maps.Marker({  
 	                position: new google.maps.LatLng(lati, longi),
 					title: title,
-					map: gmap
+					map: gmap,
+					icon: '../images/dog_icon2.png',
+					shadow: '../images/dog_icon2_shadow.png'
 	            });
 				gmap.markers.push(marker);
 				PF('mapVar').addOverlay(marker);
 			} else {
 				for (var i in markers){
 					var m = gmap.markers[i];
-					//m.setMap(null);
 					if (m.getTitle() == title) {
 						m.setPosition(new google.maps.LatLng(lati, longi));
 						break;
 					}
-				};
+				}
 			}
+		}
+		
+		function encontrouMarker(markers, title){
+			for (var i in markers){
+				var m = markers[i];
+				if (m.getTitle() == title) {
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		var poly = null;
@@ -85,8 +98,15 @@
 				<ui:include src="../layout/esquerda.xhtml" />
 			</div>
 			<div id="centro" style="height: 100%;">
-				<p:gmap id="idMap" widgetVar="mapVar" center="-20.479102, -54.583333" zoom="14" type="ROADMAP"
-					style="width:100%;height:100%" model="#{mapBean.simpleModel}"  />
+				<p:gmap id="idMap" widgetVar="mapVar" center="#{mapBean.center}" zoom="15" type="ROADMAP"
+					style="width:100%;height:100%" model="#{mapBean.simpleModel}"  >
+					<p:ajax event="overlaySelect" listener="#{mapBean.onMarkerSelect}" />  
+  					
+        			<p:gmapInfoWindow >
+        				<p:outputLabel value="Nome: " />
+        				<p:outputLabel value="#{mapBean.nomePetMarcado}" style="font-weight: bold;"/>
+        			</p:gmapInfoWindow>
+				</p:gmap>
 				<h:form>
 					<p:poll interval="10" listener="#{mapBean.updateAll}"/>
 				</h:form>

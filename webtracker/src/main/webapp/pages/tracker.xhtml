@@ -1,0 +1,120 @@
+<ui:composition template="/layout/tpl_limpo.xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="principal">
+	
+		<p:panel id="pnlTracker" header="Pets">
+		
+			<h:form  id="frmTracker">
+			
+				<p:growl id="growTracker" showDetail="false"/>
+				
+				<h:inputHidden id="txtIdHidden" value="#{trackerBean.tracker.id}" converter="javax.faces.Long" />
+				
+				<p:panelGrid columns="2" id="pnlCampos">
+				
+					<p:outputLabel value="ID" for="txtID" />
+					<p:inputText 
+						id="txtID" 
+						value="#{trackerBean.tracker.id}"
+						readonly="true">
+						<p:watermark for="txtID" value="ID Automático" />
+					</p:inputText>
+		            
+					<p:outputLabel value="Num. Série:" for="txtNumSerie" />
+					<p:inputText id="txtNumSerie" value="#{trackerBean.tracker.numeroSerie}" 
+						required="true" label="Num. Série">
+						<p:focus for="txtNumSerie"/>
+					</p:inputText>
+					
+					<p:outputLabel value="Data Fabricação:" for="dtFabr" />
+					<p:calendar id="dtFabr" value="#{trackerBean.tracker.dataFabricacao}" maxdate="now"
+							pattern="dd/MM/yyyy" size="25" placeholder=" " required="true" locale="pt_BR"
+							mode="popup" maxlength="10" label="Data de Fabricação" navigator="true" >
+						<p:watermark value="Clique aqui para calendário" for="dtFabr"/>
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</p:calendar>
+					
+					<p:outputLabel value="Modelo:" for="txtModelo"/>
+					<p:inputText id="txtModelo" value="#{trackerBean.tracker.modeloTracker}" 
+						required="true" label="Modelo"/>
+					
+					<p:outputLabel value="Fabricante:" for="txtFabricante"/>
+					<p:inputText id="txtFabricante" value="#{trackerBean.tracker.fabricanteTracker}" 
+						required="true" label="Fabricante"/>
+					
+				</p:panelGrid>
+				
+				<p:commandButton 
+						value="Salvar"
+						action="#{trackerBean.salvarTracker}"
+						update="growTracker,tblTrackers,pnlCampos,txtIdHidden"/>
+			
+				<p:separator id="separator"/>  
+				
+				<p:dataTable 
+					id="tblTrackers"
+					emptyMessage="Lista vazia" 
+					value="#{trackerBean.trackers}" var="t"
+					selectionMode="single" rowKey="#{t.id}"
+					selection="#{trackerBean.trackerSelecionado}"
+					paginator="true" rows="10" >
+					
+					<p:ajax event="rowSelect" listener="#{trackerBean.onSelect}"   
+                    	update=":frmTracker:pnlCampos,:frmTracker:txtIdHidden"/> 
+					
+					<p:column>
+						<f:facet name="header">ID</f:facet>
+						<h:outputText value="#{t.id}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Num. Série</f:facet>
+						<h:outputText value="#{t.numeroSerie}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Data Fabricação</f:facet>
+						<h:outputText value="#{t.dataFabricacao}" >
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">Modelo</f:facet>
+						<h:outputText value="#{t.modeloTracker}" />
+					</p:column>					
+										
+					<p:column>
+						<f:facet name="header">Fabricante</f:facet>
+						<h:outputText value="#{t.fabricanteTracker}" />
+					</p:column>
+										
+					<p:column headerText="Delete" style="width:50px">
+						<f:facet name="header">Ação</f:facet>
+		                <p:commandButton value="Apagar" process="@this" actionListener="#{trackerBean.deleteTracker(t)}"
+		                	id="btnApagar" title="Confirma apagar o Registro?" 
+		                	update=":frmTracker:growTracker,tblTrackers,:frmTracker:pnlCampos">
+		                	
+		                	<p:confirm header="Confirmação de exclusão" 
+		                		message="Apagar registro?" icon="ui-icon-alert" />
+                            
+		                </p:commandButton>
+		            </p:column>
+				</p:dataTable>
+				
+				<p:confirmDialog global="true">
+				    <p:commandButton value="Sim" styleClass="ui-confirmdialog-yes"  />
+				    <p:commandButton value="Não" styleClass="ui-confirmdialog-no" />
+				</p:confirmDialog>				
+				
+			</h:form>
+			
+		</p:panel>
+						
+	</ui:define>
+	
+</ui:composition>
