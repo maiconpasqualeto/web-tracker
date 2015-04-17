@@ -79,6 +79,9 @@ public class Posicao implements Entidade, Serializable {
 	@JoinColumn(name="id_tracker")
 	private Tracker tracker;
 	
+	@Column(name="mensagem_alerta")
+	private String mensagemAlerta;
+	
 	public Long getId() {
 		return id;
 	}
